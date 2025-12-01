@@ -1,0 +1,92 @@
+{
+  "version": "0.0.0",
+  "keywords": [],
+  "type": "commonjs",
+  "exports": {
+    "./package.json": "./package.json",
+    "./strapi-admin": {
+      "types": "./dist/admin/src/index.d.ts",
+      "source": "./admin/src/index.ts",
+      "import": "./dist/admin/index.mjs",
+      "require": "./dist/admin/index.js",
+      "default": "./dist/admin/index.js"
+    },
+    "./strapi-server": {
+      "types": "./dist/server/src/index.d.ts",
+      "source": "./server/src/index.ts",
+      "import": "./dist/server/index.mjs",
+      "require": "./dist/server/index.js",
+      "default": "./dist/server/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "pnpm build:tailwind && strapi-plugin build",
+    "build:tailwind": "tailwindcss -i ./admin/src/styles/global.tailwind.css -o ./admin/src/styles/global.css",
+    "watch": "concurrently 'strapi-plugin watch' 'tailwindcss -i ./admin/src/styles/global.tailwind.css -o ./admin/src/styles/global.css --watch'",
+    "watch:link": "strapi-plugin watch:link",
+    "verify": "strapi-plugin verify",
+    "strapi-plugin": "strapi-plugin",
+    "test:ts:front": "run -T tsc -p admin/tsconfig.json",
+    "test:ts:back": "run -T tsc -p server/tsconfig.json"
+  },
+  "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.11",
+    "@radix-ui/react-label": "^2.1.8",
+    "@radix-ui/react-select": "^2.2.6",
+    "@radix-ui/react-slot": "^1.2.4",
+    "@radix-ui/react-switch": "^1.2.6",
+    "@radix-ui/react-tooltip": "^1.2.8",
+    "@radix-ui/react-use-layout-effect": "^1.1.1",
+    "@strapi/design-system": "^2.0.0-rc.30",
+    "@strapi/icons": "^2.0.0-rc.30",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "colord": "^2.9.3",
+    "culori": "^4.0.2",
+    "date-fns": "^4.1.0",
+    "lucide-react": "^0.555.0",
+    "react-colorful": "^5.6.1",
+    "react-day-picker": "^9.11.2",
+    "react-intl": "^7.1.14",
+    "recharts": "^3.5.1",
+    "tailwind-merge": "^3.4.0",
+    "tw-animate-css": "^1.4.0"
+  },
+  "devDependencies": {
+    "@strapi/sdk-plugin": "^5.3.2",
+    "@strapi/strapi": "^5.31.2",
+    "@strapi/typescript-utils": "^5.31.2",
+    "@tailwindcss/cli": "^4.1.17",
+    "@types/culori": "^4.0.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "prettier": "^3.7.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.2",
+    "styled-components": "^6.1.19",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "@strapi/sdk-plugin": "^5.3.2",
+    "@strapi/strapi": "^5.31.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^6.30.2",
+    "styled-components": "^6.1.19"
+  },
+  "strapi": {
+    "kind": "plugin",
+    "name": "shadcn-theme-builder",
+    "displayName": "Shadcn Theme Builder",
+    "description": "Strapi plugin to generate Shadcn UI themes"
+  },
+  "name": "shadcn-theme-builder",
+  "description": "Strapi plugin to generate Shadcn UI themes",
+  "license": "MIT",
+  "author": "Jun Bosque <bosque.junpaul@gmail.com>"
+}

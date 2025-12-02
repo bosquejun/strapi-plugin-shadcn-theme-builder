@@ -2,11 +2,12 @@ import type { Core } from '@strapi/strapi';
 
 const controller = ({ strapi }: { strapi: Core.Strapi }) => ({
   index(ctx) {
-    ctx.body = strapi
-      .plugin('shadcn-theme-builder')
-      // the name of the service file & the method.
-      .service('service')
-      .getWelcomeMessage();
+    ctx.body = strapi.plugin('shadcn-theme-builder').service('service').getWelcomeMessage();
+  },
+
+  async presets(ctx) {
+    const presets = strapi.plugin('shadcn-theme-builder').service('service').getPresetThemes();
+    ctx.body = presets;
   },
 });
 

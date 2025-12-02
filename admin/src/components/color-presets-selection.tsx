@@ -51,14 +51,14 @@ export function ColorPresetsSelection() {
           onChange={(id: string | null) => {
             updateCurrentThemeById(id);
           }}
-          placeholder="Select a theme"
+          placeholder={loading ? 'Loading presets...' : 'Select a theme'}
           startIcon={<ColorPalette colors={currentColorPalette} />}
         >
           {themes.map((theme) => (
             <ComboboxOption value={theme.id} key={theme.id}>
               <Flex justifyContent="space-between" alignItems="center" width="100%">
                 <ColorPalette colors={getThemeColorPalette(theme)} label={theme.name} />
-                <Typography variant="pi">by {theme.source}</Typography>
+                {theme.id !== 'custom' && <Typography variant="pi">by {theme.source}</Typography>}
               </Flex>
             </ComboboxOption>
           ))}

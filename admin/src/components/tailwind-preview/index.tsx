@@ -1,3 +1,4 @@
+import { EmptyStateLayout, Flex, Loader } from '@strapi/design-system';
 import { useThemePresets } from '../../contexts/theme-presets';
 import { objectToCssVars } from '../../utils/cssVars';
 import { TooltipProvider } from '../ui/tooltip';
@@ -9,13 +10,18 @@ import { CardStats2 } from './cards/card-stats-2';
 import { CardsStats } from './cards/stats';
 
 export function TailwindPreview() {
-  const { currentTheme, isDarkMode } = useThemePresets();
-
+  const { currentTheme, isDarkMode, loading } = useThemePresets();
   const targetMode = isDarkMode ? 'dark' : 'light';
 
   const targetTheme = currentTheme?.[targetMode];
 
-  if (!targetTheme) return null;
+  if (loading || !targetTheme) {
+    return (
+      <Flex width="100%" height="100%" alignItems="center" justifyContent="center">
+        <EmptyStateLayout icon={<Loader />} content="Loading theme..." shadow="none" />
+      </Flex>
+    );
+  }
 
   return (
     <TooltipProvider>

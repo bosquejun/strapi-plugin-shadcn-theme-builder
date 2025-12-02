@@ -4,6 +4,7 @@ import { MoonIcon, SunIcon } from 'lucide-react';
 import { useId } from 'react';
 
 import { useThemePresets } from '../contexts/theme-presets';
+import { cn } from '../lib/utils';
 import { Label } from './ui/label';
 import { Switch } from './ui/switch';
 
@@ -16,7 +17,9 @@ export default function ToggleTailwindMode() {
       <div className="relative inline-grid h-10 w-20 grid-cols-[1fr_1fr] items-center font-medium text-sm">
         <Switch
           checked={isDarkMode}
-          className=" peer [&_span]:data-[state=checked]:rtl:-translate-x-full absolute inset-0 h-[inherit] w-auto data-[state=unchecked]:!bg-input/50 [&_span]:z-10 [&_span]:h-full [&_span]:!w-1/2 [&_span]:!transition-transform [&_span]:!duration-300 [&_span]:!ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:!translate-x-full"
+          className={cn(
+            'peer [&_span]:data-[state=checked]:rtl:-translate-x-full absolute inset-0 h-[inherit] w-auto data-[state=unchecked]:!bg-input/50 [&_span]:z-10 [&_span]:h-full [&_span]:!w-1/2 [&_span]:!transition-transform [&_span]:!duration-300 [&_span]:!ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:!translate-x-full'
+          )}
           id={id}
           onCheckedChange={toggleDarkMode}
         />

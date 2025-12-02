@@ -2,7 +2,7 @@ import contentAPIRoutes from './content-api';
 
 const routes = {
   'content-api': {
-    type: 'content-api',
+    type: 'admin',
     routes: contentAPIRoutes,
   },
 };

@@ -1,5 +1,5 @@
-import { ThemePreset } from '../../../types';
-import { PresetTheme } from '../contexts/theme-presets';
+import type { ThemePreset } from '../../../types';
+import type { PresetTheme } from './types';
 
 export const DEFAULT_FONT_SANS =
   "ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji'";
@@ -9,7 +9,7 @@ export const DEFAULT_FONT_SERIF = 'ui-serif, Georgia, Cambria, "Times New Roman"
 export const DEFAULT_FONT_MONO =
   'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace';
 
-export const defaultLightTheme: ThemePreset = {
+const defaultLightTheme: ThemePreset = {
   background: 'oklch(1 0 0)',
   foreground: 'oklch(0.145 0 0)',
   card: 'oklch(1 0 0)',
@@ -29,7 +29,7 @@ export const defaultLightTheme: ThemePreset = {
   border: 'oklch(0.922 0 0)',
   input: 'oklch(0.922 0 0)',
   ring: 'oklch(0.708 0 0)',
-  chart1: 'oklch(0.81 0.10 252)',
+  chart1: 'oklch(0.81 0.1 252)',
   chart2: 'oklch(0.62 0.19 260)',
   chart3: 'oklch(0.55 0.22 263)',
   chart4: 'oklch(0.49 0.22 264)',
@@ -48,7 +48,7 @@ export const defaultLightTheme: ThemePreset = {
   fontMono: DEFAULT_FONT_MONO,
 };
 
-export const defaultDarkTheme: ThemePreset = {
+const defaultDarkTheme: ThemePreset = {
   ...defaultLightTheme,
   background: 'oklch(0.145 0 0)',
   foreground: 'oklch(0.985 0 0)',
@@ -66,31 +66,31 @@ export const defaultDarkTheme: ThemePreset = {
   accentForeground: 'oklch(0.985 0 0)',
   destructive: 'oklch(0.704 0.191 22.216)',
   destructiveForeground: 'oklch(0.985 0 0)',
-  border: 'oklch(0.275 0 0)', // in place of oklch(1 0 0 / 10%)
-  input: 'oklch(0.325 0 0)', // in place of oklch(1 0 0 / 15%)
+  border: 'oklch(0.275 0 0)',
+  input: 'oklch(0.325 0 0)',
   ring: 'oklch(0.556 0 0)',
-  chart1: 'oklch(0.81 0.10 252)',
+  chart1: 'oklch(0.81 0.1 252)',
   chart2: 'oklch(0.62 0.19 260)',
   chart3: 'oklch(0.55 0.22 263)',
   chart4: 'oklch(0.49 0.22 264)',
   chart5: 'oklch(0.42 0.18 266)',
-  // Actual has radius but not in Expected, keeping it as is
   radius: '0.625rem',
-  // Converting sidebar-related variables to match Actual format
   sidebar: 'oklch(0.205 0 0)',
   sidebarForeground: 'oklch(0.985 0 0)',
   sidebarPrimary: 'oklch(0.488 0.243 264.376)',
   sidebarPrimaryForeground: 'oklch(0.985 0 0)',
   sidebarAccent: 'oklch(0.269 0 0)',
   sidebarAccentForeground: 'oklch(0.985 0 0)',
-  sidebarBorder: 'oklch(0.275 0 0)', // in place of oklch(1 0 0 / 10%)
+  sidebarBorder: 'oklch(0.275 0 0)',
   sidebarRing: 'oklch(0.439 0 0)',
 };
 
-export default {
+const defaultTheme: PresetTheme = {
   light: defaultLightTheme,
   dark: defaultDarkTheme,
   name: 'Default',
   id: 'default',
   source: 'shadcn',
-} satisfies PresetTheme;
+};
+
+export default defaultTheme;

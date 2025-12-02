@@ -84,6 +84,21 @@ export function ControlPanel() {
                 />
 
                 <ColorsControlAccordion
+                  title="Card Colors"
+                  onColorChange={updateColorPalette}
+                  targetColors={{
+                    card: {
+                      label: 'Card Background',
+                      value: currentTheme?.[targetMode].card || null,
+                    },
+                    cardForeground: {
+                      label: 'Card Foreground',
+                      value: currentTheme?.[targetMode].cardForeground || null,
+                    },
+                  }}
+                />
+
+                <ColorsControlAccordion
                   title="Popover Colors"
                   onColorChange={updateColorPalette}
                   targetColors={{

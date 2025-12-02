@@ -1,6 +1,7 @@
 import { Initializer } from './components/Initializer';
 import { PluginIcon } from './components/PluginIcon';
 import { PLUGIN_ID, PLUGIN_NAME } from './constants';
+import pluginPermissions from './permissions';
 
 import './styles/global.css';
 
@@ -18,6 +19,7 @@ export default {
 
         return App;
       },
+      permissions: [pluginPermissions.accessSidebar[0]],
     });
 
     app.registerPlugin({

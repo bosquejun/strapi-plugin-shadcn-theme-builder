@@ -1,5 +1,8 @@
+import { Page, useFetchClient, useNotification } from '@strapi/strapi/admin';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { ThemePreset } from '../../../types';
+import { BASE_PLUGIN_URL } from '../constants';
+import pluginPermissions from '../permissions';
 
 export type PresetTheme = {
   light: ThemePreset;
@@ -21,9 +24,15 @@ type ThemePresetsContext = {
   updateColorPalette: (colorKey: keyof ThemePreset, value: string) => void;
 };
 
-export function getThemeColorPalette(theme: PresetTheme | null): string[] {
+export function getThemeColorPalette(theme: PresetTheme | null, isDarkMode = false): string[] {
   if (!theme) return [];
-  return [theme.light.primary, theme.light.secondary, theme.light.accent, theme.light.border];
+  const mode = isDarkMode ? 'dark' : 'light';
+  return [
+    theme?.[mode].primary,
+    theme?.[mode].secondary,
+    theme?.[mode].accent,
+    theme?.[mode].border,
+  ];
 }
 
 const Context = createContext<ThemePresetsContext>({
@@ -42,22 +51,42 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
   const [themes, setThemes] = useState<PresetTheme[]>([]);
   const [currentTheme, setCurrentTheme] = useState<PresetTheme | null>(null);
   const [loading, setLoading] = useState(true);
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(true);
+  const { toggleNotification } = useNotification();
+
+  const { get } = useFetchClient();
 
   useEffect(() => {
     const loadThemes = async () => {
-      setLoading(true);
-      const importedThemes = await import('../preset-themes');
-      const _themes = Object.values(importedThemes) as PresetTheme[];
-      setThemes(_themes);
-      setCurrentTheme(_themes[0]);
-      setLoading(false);
+      try {
+        setLoading(true);
+        const response = await get(`${BASE_PLUGIN_URL}/presets`);
+
+        const data = (response?.data || response) as PresetTheme[];
+        setThemes(data);
+        setCurrentTheme(data[0] ?? null);
+      } catch (e) {
+        const { message } = e as { message: string };
+        toggleNotification({
+          type: 'danger',
+          message: `Failed to load themes. ${message}.`,
+        });
+        // In case of error, keep defaults empty but stop loading
+        // You might want to add a notification here later.
+        setThemes([]);
+        setCurrentTheme(null);
+      } finally {
+        setLoading(false);
+      }
     };
 
     loadThemes();
-  }, []);
+  }, [get]);
 
-  const currentColorPalette = useMemo(() => getThemeColorPalette(currentTheme), [currentTheme]);
+  const currentColorPalette = useMemo(
+    () => getThemeColorPalette(currentTheme, isDarkMode),
+    [currentTheme, isDarkMode]
+  );
 
   const toggleDarkMode = () => {
     setIsDarkMode(!isDarkMode);
@@ -121,7 +150,11 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
     updateColorPalette,
   };
 
-  return <Context.Provider value={contextValue}>{children}</Context.Provider>;
+  return (
+    <Context.Provider value={contextValue}>
+      <Page.Protect permissions={pluginPermissions.accessOverview}>{children as any}</Page.Protect>
+    </Context.Provider>
+  );
 };
 
 export const useThemePresets = () => {

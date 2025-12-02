@@ -1,7 +1,7 @@
-import { ThemePreset } from '../../../types';
-import { PresetTheme } from '../contexts/theme-presets';
+import type { ThemePreset } from '../../../types';
+import type { PresetTheme } from './types';
 
-const lightTheme: ThemePreset = {
+const modernMinimalLightTheme: ThemePreset = {
   background: '#ffffff',
   foreground: '#333333',
   card: '#ffffff',
@@ -40,7 +40,7 @@ const lightTheme: ThemePreset = {
   chart5: '#1e3a8a',
 };
 
-const darkTheme: ThemePreset = {
+const modernMinimalDarkTheme: ThemePreset = {
   background: '#171717',
   foreground: '#e5e5e5',
   card: '#262626',
@@ -76,10 +76,14 @@ const darkTheme: ThemePreset = {
   sidebarRing: '#3b82f6',
 };
 
-export default {
-  light: lightTheme,
-  dark: darkTheme,
+const modernMinimalTheme: PresetTheme = {
+  light: modernMinimalLightTheme,
+  dark: modernMinimalDarkTheme,
   name: 'Modern Minimal',
   id: 'modernMinimal',
   source: 'tweakcn',
-} satisfies PresetTheme;
+};
+
+export default modernMinimalTheme;
+
+

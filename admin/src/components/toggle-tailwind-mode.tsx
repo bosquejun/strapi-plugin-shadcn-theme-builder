@@ -18,7 +18,8 @@ export default function ToggleTailwindMode() {
         <Switch
           checked={isDarkMode}
           className={cn(
-            'peer [&_span]:data-[state=checked]:rtl:-translate-x-full absolute inset-0 h-[inherit] w-auto data-[state=unchecked]:!bg-input/50 [&_span]:z-10 [&_span]:h-full [&_span]:!w-1/2 [&_span]:!transition-transform [&_span]:!duration-300 [&_span]:!ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:!translate-x-full'
+            'peer [&_span]:data-[state=checked]:rtl:-translate-x-full absolute inset-0 h-[inherit] w-auto [&_span]:z-10 [&_span]:h-full [&_span]:!w-1/2 [&_span]:!transition-transform [&_span]:!duration-300 [&_span]:!ease-[cubic-bezier(0.16,1,0.3,1)] [&_span]:data-[state=checked]:!translate-x-full',
+            'data-[state=unchecked]:!bg-[var(--strapi-neutral100)] data-[state=checked]:!bg-[var(--strapi-primary500)]'
           )}
           id={id}
           onCheckedChange={toggleDarkMode}

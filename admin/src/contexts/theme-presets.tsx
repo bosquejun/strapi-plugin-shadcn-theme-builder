@@ -1,8 +1,10 @@
 import { Page, useFetchClient, useNotification } from '@strapi/strapi/admin';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { useTheme } from 'styled-components';
 import { ThemePreset } from '../../../types';
 import { BASE_PLUGIN_URL } from '../constants';
 import pluginPermissions from '../permissions';
+import { objectToCssVars } from '../utils/cssVars';
 
 export type PresetTheme = {
   light: ThemePreset;
@@ -53,7 +55,7 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
   const [isDarkMode, setIsDarkMode] = useState(true);
   const { toggleNotification } = useNotification();
-
+  const theme = useTheme();
   const { get } = useFetchClient();
 
   useEffect(() => {
@@ -152,7 +154,9 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
 
   return (
     <Context.Provider value={contextValue}>
-      <Page.Protect permissions={pluginPermissions.accessOverview}>{children as any}</Page.Protect>
+      <Page.Protect permissions={pluginPermissions.accessOverview}>
+        <div style={objectToCssVars(theme.colors as any, 'strapi')}>{children as any}</div>
+      </Page.Protect>
     </Context.Provider>
   );
 };

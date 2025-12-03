@@ -94,7 +94,7 @@
     "displayName": "Shadcn Theme Builder",
     "description": "Shadcn Theme Builder for Strapi is a plugin that brings a visual, real-time customization experience to your Strapi admin panel. Inspired by TweakCN, it allows you to easily generate, edit, and manage Shadcn UI themes without touching code."
   },
-  "name": "shadcn-theme-builder",
+  "name": "strapi-plugin-shadcn-theme-builder",
   "description": "Shadcn Theme Builder for Strapi is a plugin that brings a visual, real-time customization experience to your Strapi admin panel. Inspired by TweakCN, it allows you to easily generate, edit, and manage Shadcn UI themes without touching code.",
   "license": "MIT",
   "author": "Jun Bosque <bosque.junpaul@gmail.com>"

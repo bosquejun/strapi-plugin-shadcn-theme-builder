@@ -1,5 +1,6 @@
 import {
-  Box,
+  Badge,
+  Button,
   Combobox,
   ComboboxOption,
   Flex,
@@ -13,8 +14,15 @@ import { getThemeColorPalette, useThemePresets } from '../contexts/theme-presets
 import { ColorPalette } from './color-palette';
 
 export function ColorPresetsSelection() {
-  const { themes, currentTheme, currentColorPalette, updateCurrentThemeById, loading } =
-    useThemePresets();
+  const {
+    themes,
+    currentTheme,
+    currentColorPalette,
+    updateCurrentThemeById,
+    loading,
+    activeTheme,
+    setActiveThemeById,
+  } = useThemePresets();
 
   const navigationProps = useMemo(() => {
     const currentIndex = themes.findIndex((theme) => theme.id === currentTheme?.id);
@@ -40,7 +48,7 @@ export function ColorPresetsSelection() {
 
   return (
     <>
-      <Box width="100%">
+      <Flex grow={1} width="100%" minWidth="40rem">
         <Combobox
           allowCustomValue
           loading={loading}
@@ -53,18 +61,26 @@ export function ColorPresetsSelection() {
           }}
           placeholder={loading ? 'Loading presets...' : 'Select a theme'}
           startIcon={<ColorPalette colors={currentColorPalette} />}
+          className="w-full"
         >
           {themes.map((theme) => (
             <ComboboxOption value={theme.id} key={theme.id}>
               <Flex justifyContent="space-between" alignItems="center" width="100%">
-                <ColorPalette colors={getThemeColorPalette(theme)} label={theme.name} />
+                <Flex gap={1}>
+                  <ColorPalette colors={getThemeColorPalette(theme)} label={theme.name} />
+                  {theme.id === activeTheme?.id && (
+                    <Badge size="S" textColor="success500">
+                      Active
+                    </Badge>
+                  )}
+                </Flex>
                 {theme.id !== 'custom' && <Typography variant="pi">by {theme.source}</Typography>}
               </Flex>
             </ComboboxOption>
           ))}
         </Combobox>
-      </Box>
-      <Flex gap={1}>
+      </Flex>
+      <Flex gap={2} flex="none">
         <IconButtonGroup>
           <IconButton
             variant="secondary"
@@ -83,6 +99,17 @@ export function ColorPresetsSelection() {
             <ArrowRight />
           </IconButton>
         </IconButtonGroup>
+        <Button
+          size="L"
+          variant="secondary"
+          onClick={() => {
+            if (!currentTheme?.id) return;
+            setActiveThemeById(currentTheme?.id!);
+          }}
+          disabled={currentTheme?.id === activeTheme?.id}
+        >
+          Set Active Theme
+        </Button>
       </Flex>
     </>
   );

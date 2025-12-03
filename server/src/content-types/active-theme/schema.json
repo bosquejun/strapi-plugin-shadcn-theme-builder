@@ -1,0 +1,24 @@
+{
+  "kind": "singleType",
+  "collectionName": "active_theme",
+  "info": {
+    "singularName": "active-theme",
+    "pluralName": "active-themes",
+    "displayName": "Active Theme",
+    "description": "Stores the currently active theme configuration"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "themeId": {
+      "type": "string",
+      "required": true
+    },
+    "theme": {
+      "type": "json",
+      "required": true
+    }
+  }
+}

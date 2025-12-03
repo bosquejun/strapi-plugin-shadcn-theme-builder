@@ -1,7 +1,6 @@
-import type { ThemePreset } from '../../../types';
-import type { PresetTheme } from './types';
+import { ThemePresetInput, ThemeRegistryInput } from 'src/schema/theme';
 
-const violetBloomLightTheme: ThemePreset = {
+const violetBloomLightTheme: ThemePresetInput = {
   background: '#fdfdfd',
   foreground: '#000000',
   card: '#fdfdfd',
@@ -40,7 +39,7 @@ const violetBloomLightTheme: ThemePreset = {
   radius: '1.4rem',
 };
 
-const violetBloomDarkTheme: ThemePreset = {
+const violetBloomDarkTheme: ThemePresetInput = {
   background: '#1a1b1e',
   foreground: '#f0f0f0',
   card: '#222327',
@@ -78,11 +77,11 @@ const violetBloomDarkTheme: ThemePreset = {
   fontMono: 'IBM Plex Mono, monospace',
 };
 
-const violetBloomTheme: PresetTheme = {
+const violetBloomTheme: ThemeRegistryInput = {
   light: violetBloomLightTheme,
   dark: violetBloomDarkTheme,
   name: 'Violet Bloom',
-  id: 'violetBloom',
+  id: 'violet-bloom',
   source: 'tweakcn',
 };
 

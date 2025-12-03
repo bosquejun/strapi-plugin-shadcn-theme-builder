@@ -3,7 +3,7 @@ import { PluginIcon } from './components/PluginIcon';
 import { PLUGIN_ID, PLUGIN_NAME } from './constants';
 import pluginPermissions from './permissions';
 
-import './styles/global.css';
+import './styles/global.tailwind.css';
 
 export default {
   register(app: any) {

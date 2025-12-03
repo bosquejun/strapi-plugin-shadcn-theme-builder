@@ -2,11 +2,11 @@ import { Typography } from '@strapi/design-system';
 import { Eye, Faders } from '@strapi/icons';
 import { useIntl } from 'react-intl';
 
-import { Page } from '@strapi/admin/strapi-admin';
+import { Page, useMediaQuery } from '@strapi/admin/strapi-admin';
 import { Box, Flex, Grid, Tabs } from '@strapi/design-system';
+import { useIsDesktop } from '@strapi/strapi/admin';
+import ColorThemesSelection from '../components/color-themes-selection';
 import { ControlPanel } from '../components/control-panel';
-import { DesktopView } from '../components/desktop-view';
-import { MobileView } from '../components/mobile-view';
 import { TailwindPreview } from '../components/tailwind-preview';
 import { ThemeCode } from '../components/theme-code';
 import ToggleTailwindMode from '../components/toggle-tailwind-mode';
@@ -14,6 +14,9 @@ import { getTranslation } from '../utils/getTranslation';
 
 const HomePage = () => {
   const { formatMessage } = useIntl();
+  const isDesktop = useIsDesktop();
+
+  const twoRows = useMediaQuery('(max-width: 1500px)');
 
   return (
     <Page.Main>
@@ -56,7 +59,43 @@ const HomePage = () => {
             {formatMessage({ id: getTranslation('plugin.name') })}
           </Typography>
         </Flex>
-        <MobileView>
+        {isDesktop ? (
+          <Grid.Root
+            gap={{
+              initial: 2,
+              large: 6,
+              medium: 4,
+              small: 2,
+            }}
+          >
+            <Grid.Item background="neutral0" padding={4} col={8} shadow="tableShadow">
+              <Flex direction="column" gap={2} width="100%" height="100%" alignItems="flex-start">
+                <Flex
+                  direction={twoRows ? 'column' : 'row'}
+                  gap={2}
+                  alignItems="center"
+                  justifyContent="space-between"
+                  width="100%"
+                >
+                  <Flex gap={2} width="100%" flex={0}>
+                    <ColorThemesSelection />
+                  </Flex>
+                  <Flex></Flex>
+                  <Flex gap={2} width="100%" justifyContent="flex-end" flex={1}>
+                    <ToggleTailwindMode />
+                    <ThemeCode />
+                  </Flex>
+                </Flex>
+                <Flex gap={2} alignItems="center" width="100%" height="100%">
+                  <TailwindPreview />
+                </Flex>
+              </Flex>
+            </Grid.Item>
+            <Grid.Item background="neutral0" padding={4} col={4} shadow="tableShadow">
+              <ControlPanel />
+            </Grid.Item>
+          </Grid.Root>
+        ) : (
           <Tabs.Root value="controls" defaultValue="controls">
             <Tabs.List aria-label="Mobile Tabs View">
               <Tabs.Trigger value="controls">
@@ -83,33 +122,14 @@ const HomePage = () => {
               </Box>
             </Tabs.Content>
           </Tabs.Root>
+        )}
+        {/* <MobileView>
+          
         </MobileView>
 
         <DesktopView>
-          <Grid.Root
-            gap={{
-              initial: 2,
-              large: 6,
-              medium: 4,
-              small: 2,
-            }}
-          >
-            <Grid.Item background="neutral0" padding={4} col={8}>
-              <Flex direction="column" gap={2} width="100%" height="100%" alignItems="flex-start">
-                <Flex gap={1} alignItems="center" justifyContent="flex-end" width="100%">
-                  <ToggleTailwindMode />
-                  <ThemeCode />
-                </Flex>
-                <Flex gap={2} alignItems="center" width="100%" height="100%">
-                  <TailwindPreview />
-                </Flex>
-              </Flex>
-            </Grid.Item>
-            <Grid.Item background="neutral0" padding={4} col={4}>
-              <ControlPanel />
-            </Grid.Item>
-          </Grid.Root>
-        </DesktopView>
+         
+        </DesktopView> */}
       </Flex>
     </Page.Main>
   );

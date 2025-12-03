@@ -1,12 +1,14 @@
 import { Button, Modal } from '@strapi/design-system';
 import { Braces } from 'lucide-react';
 import { useThemePresets } from '../contexts/theme-presets';
-import { objectToCssVars } from '../utils/cssVars';
+import { themeToCssFileVariables } from '../utils/cssVars';
 import { CodeBlock } from './code-block';
 
 export const ThemeCode = () => {
   const { currentTheme } = useThemePresets();
   if (!currentTheme) return null;
+
+  console.log(currentTheme);
   return (
     <Modal.Root>
       <Modal.Trigger>
@@ -21,9 +23,13 @@ export const ThemeCode = () => {
 
         <Modal.Body>
           <CodeBlock
-            code={JSON.stringify(objectToCssVars(currentTheme?.light!), null, 2)}
+            code={`
+${themeToCssFileVariables(currentTheme.light)}
+
+${themeToCssFileVariables(currentTheme.dark, '.dark')}
+              `}
             language="css"
-            className="h-full rounded-none border-0 w-[32rem]"
+            className="h-full rounded-none border-0"
           />
         </Modal.Body>
         <Modal.Footer>

@@ -1,7 +1,6 @@
-import type { ThemePreset } from '../../../types';
-import type { PresetTheme } from './types';
+import { ThemePresetInput, ThemeRegistryInput } from 'src/schema/theme';
 
-const modernMinimalLightTheme: ThemePreset = {
+const modernMinimalLightTheme: ThemePresetInput = {
   background: '#ffffff',
   foreground: '#333333',
   card: '#ffffff',
@@ -40,7 +39,7 @@ const modernMinimalLightTheme: ThemePreset = {
   chart5: '#1e3a8a',
 };
 
-const modernMinimalDarkTheme: ThemePreset = {
+const modernMinimalDarkTheme: ThemePresetInput = {
   background: '#171717',
   foreground: '#e5e5e5',
   card: '#262626',
@@ -76,14 +75,12 @@ const modernMinimalDarkTheme: ThemePreset = {
   sidebarRing: '#3b82f6',
 };
 
-const modernMinimalTheme: PresetTheme = {
+const modernMinimalTheme: ThemeRegistryInput = {
   light: modernMinimalLightTheme,
   dark: modernMinimalDarkTheme,
   name: 'Modern Minimal',
-  id: 'modernMinimal',
+  id: 'modern-minimal',
   source: 'tweakcn',
 };
 
 export default modernMinimalTheme;
-
-

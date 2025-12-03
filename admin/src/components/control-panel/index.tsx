@@ -1,6 +1,5 @@
-import { Flex, ScrollArea, Tabs } from '@strapi/design-system';
+import { Button, Divider, Flex, ScrollArea, Tabs, Typography } from '@strapi/design-system';
 import { useThemePresets } from '../../contexts/theme-presets';
-import { ColorPresetsSelection } from '../color-presets-selection';
 import { ColorsControlAccordion } from './colors-control-accordion';
 
 export function ControlPanel() {
@@ -10,9 +9,13 @@ export function ControlPanel() {
 
   return (
     <Flex direction="column" gap={2} width="100%" alignItems="flex-start">
-      <Flex gap={2} alignItems="center" width="100%">
-        <ColorPresetsSelection />
+      <Flex gap={2} alignItems="center" justifyContent="space-between" width="100%">
+        <Typography>Control Panel</Typography>
+        <Button size="L" variant="secondary" disabled={currentTheme?.id !== 'custom'}>
+          Save Custom Theme
+        </Button>
       </Flex>
+      <Divider width="100%" />
       <Flex gap={2} alignItems="center" width="100%">
         <Tabs.Root variant="simple" defaultValue="colors">
           <Tabs.List aria-label="Controls Tabs">

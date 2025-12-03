@@ -1,3 +1,5 @@
+import { useNotification } from '@strapi/admin/strapi-admin';
+import { Badge } from '@strapi/design-system';
 import { CheckIcon, CopyIcon } from 'lucide-react';
 import type { ComponentProps, HTMLAttributes, ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
@@ -33,29 +35,36 @@ export const CodeBlock = ({
 }: CodeBlockProps) => {
   const [mode] = useLocalStorage('STRAPI_THEME', 'dark');
   const theme = useTheme();
+  const { toggleNotification } = useNotification();
 
   return (
     <CodeBlockContext.Provider value={{ code }}>
-      <div
-        className={cn(
-          'bg-background text-foreground relative w-full overflow-hidden rounded-md border',
-          className
-        )}
-        {...props}
-      >
-        <div className="relative min-w-1/2">
+      <div className={cn('bg-(--strapi-neutral100) border ', className)} {...props}>
+        <div className="flex justify-between items-center p-2">
+          <Badge>index.css</Badge>
+          <CodeBlockCopyButton
+          // size="default"
+          // className="bg-(--strapi-button-primary600) text-(--strapi-button-neutral0)"
+          />
+        </div>
+        <div
+          className="relative w-full max-h-[40vh] overflow-y-auto [&::-webkit-scrollbar]:w-2
+  [&::-webkit-scrollbar-track]:bg-transparent
+  [&::-webkit-scrollbar-thumb]:bg-(--strapi-neutral150)
+  [&::-webkit-scrollbar-thumb]:rounded-full
+  [&::-webkit-scrollbar-thumb:hover]:bg-(--strapi-neutral200)"
+        >
           <SyntaxHighlighter
-            className="overflow-hidden"
+            className="overflow-hidden [&_span]:text-base"
             codeTagProps={{
               className: 'font-mono text-sm',
             }}
             customStyle={{
               margin: 0,
               padding: '1rem',
-              fontSize: '0.875rem',
+              fontSize: '1rem',
               background: theme.colors.neutral100,
               color: theme.colors.neutral1000,
-              // background: 'hsl(var(--background))',
               border: 'hsl(var(--border))',
             }}
             language={language}
@@ -115,13 +124,11 @@ export const CodeBlockCopyButton = ({
 
   return (
     <Button
-      className={cn('shrink-0', className)}
+      className={cn('shrink-0 bg-(--strapi-primary500) text-(--button-neutral0)', className)}
       onClick={copyToClipboard}
-      size="icon"
-      variant="ghost"
       {...props}
     >
-      {children ?? <Icon size={14} />}
+      <Icon size={14} /> {isCopied ? 'Copied' : 'Copy'}
     </Button>
   );
 };

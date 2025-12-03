@@ -1,8 +1,7 @@
-@import "tailwindcss" important;
-@import "tw-animate-css";
+@import 'tailwindcss' important;
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
-
 
 :root {
   --background: oklch(1 0 0);
@@ -39,6 +38,8 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 
+  --spacing: 0.25rem;
+
   --text-sm: 1rem;
   --text-sm--line-height: calc(1.5 / 1);
   --text-base: 1.25rem;
@@ -49,6 +50,52 @@
   --text-xl--line-height: calc(1.5 / 2);
   --text-2xl: 2.5rem;
   --text-2xl--line-height: calc(1.5 / 2.5);
+
+  --strapi-alternative100: #181826;
+  --strapi-alternative200: #4a4a6a;
+  --strapi-alternative500: #ac73e6;
+  --strapi-alternative600: #ac73e6;
+  --strapi-alternative700: #e0c1f4;
+  --strapi-button-neutral0: #ffffff;
+  --strapi-button-primary500: #7b79ff;
+  --strapi-button-primary600: #4945ff;
+  --strapi-danger100: #181826;
+  --strapi-danger200: #4a4a6a;
+  --strapi-danger500: #ee5e52;
+  --strapi-danger600: #ee5e52;
+  --strapi-danger700: #ee5e52;
+  --strapi-neutral0: #212134;
+  --strapi-neutral100: #181826;
+  --strapi-neutral1000: #ffffff;
+  --strapi-neutral150: #32324d;
+  --strapi-neutral200: #4a4a6a;
+  --strapi-neutral300: #666687;
+  --strapi-neutral400: #a5a5ba;
+  --strapi-neutral500: #c0c0cf;
+  --strapi-neutral600: #a5a5ba;
+  --strapi-neutral700: #eaeaef;
+  --strapi-neutral800: #ffffff;
+  --strapi-neutral900: #ffffff;
+  --strapi-primary100: #181826;
+  --strapi-primary200: #4a4a6a;
+  --strapi-primary500: #4945ff;
+  --strapi-primary600: #7b79ff;
+  --strapi-primary700: #7b79ff;
+  --strapi-secondary100: #181826;
+  --strapi-secondary200: #4a4a6a;
+  --strapi-secondary500: #66b7f1;
+  --strapi-secondary600: #66b7f1;
+  --strapi-secondary700: #b8e1ff;
+  --strapi-success100: #181826;
+  --strapi-success200: #4a4a6a;
+  --strapi-success500: #5cb176;
+  --strapi-success600: #5cb176;
+  --strapi-success700: #c6f0c2;
+  --strapi-warning100: #181826;
+  --strapi-warning200: #4a4a6a;
+  --strapi-warning500: #f29d41;
+  --strapi-warning600: #f29d41;
+  --strapi-warning700: #fae7b9;
 }
 
 .dark {
@@ -123,6 +170,52 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-strapi-alternative100: var(--strapi-alternative100);
+  --color-strapi-alternative200: var(--strapi-alternative200);
+  --color-strapi-alternative500: var(--strapi-alternative500);
+  --color-strapi-alternative600: var(--strapi-alternative600);
+  --color-strapi-alternative700: var(--strapi-alternative700);
+  --color-strapi-button-neutral0: var(--strapi-button-neutral0);
+  --color-strapi-button-primary500: var(--strapi-button-primary500);
+  --color-strapi-button-primary600: var(--strapi-button-primary600);
+  --color-strapi-danger100: var(--strapi-danger100);
+  --color-strapi-danger200: var(--strapi-danger200);
+  --color-strapi-danger500: var(--strapi-danger500);
+  --color-strapi-danger600: var(--strapi-danger600);
+  --color-strapi-danger700: var(--strapi-danger700);
+  --color-strapi-neutral0: var(--strapi-neutral0);
+  --color-strapi-neutral100: var(--strapi-neutral100);
+  --color-strapi-neutral1000: var(--strapi-neutral1000);
+  --color-strapi-neutral150: var(--strapi-neutral150);
+  --color-strapi-neutral200: var(--strapi-neutral200);
+  --color-strapi-neutral300: var(--strapi-neutral300);
+  --color-strapi-neutral400: var(--strapi-neutral400);
+  --color-strapi-neutral500: var(--strapi-neutral500);
+  --color-strapi-neutral600: var(--strapi-neutral600);
+  --color-strapi-neutral700: var(--strapi-neutral700);
+  --color-strapi-neutral800: var(--strapi-neutral800);
+  --color-strapi-neutral900: var(--strapi-neutral900);
+  --color-strapi-primary100: var(--strapi-primary100);
+  --color-strapi-primary200: var(--strapi-primary200);
+  --color-strapi-primary500: var(--strapi-primary500);
+  --color-strapi-primary600: var(--strapi-primary600);
+  --color-strapi-primary700: var(--strapi-primary700);
+  --color-strapi-secondary100: var(--strapi-secondary100);
+  --color-strapi-secondary200: var(--strapi-secondary200);
+  --color-strapi-secondary500: var(--strapi-secondary500);
+  --color-strapi-secondary600: var(--strapi-secondary600);
+  --color-strapi-secondary700: var(--strapi-secondary700);
+  --color-strapi-success100: var(--strapi-success100);
+  --color-strapi-success200: var(--strapi-success200);
+  --color-strapi-success500: var(--strapi-success500);
+  --color-strapi-success600: var(--strapi-success600);
+  --color-strapi-success700: var(--strapi-success700);
+  --color-strapi-warning100: var(--strapi-warning100);
+  --color-strapi-warning200: var(--strapi-warning200);
+  --color-strapi-warning500: var(--strapi-warning500);
+  --color-strapi-warning600: var(--strapi-warning600);
+  --color-strapi-warning700: var(--strapi-warning700);
 }
 
 @layer base {
@@ -137,7 +230,7 @@
 .tailwind-preview {
   /* Reset to 16px base */
   font-size: 16px;
-  
+
   /* Reset all children to use this as base */
   & * {
     /* Inherit from this container, not html root */

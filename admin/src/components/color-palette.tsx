@@ -36,7 +36,7 @@ export const ColorPalette: React.FC<ColorPaletteProps> = ({ colors, label }) => 
           <Swatch key={`${color}-${i}`} size={size} left={i * overlap} color={color} />
         ))}
       </Wrapper>
-      {label && <Typography variant="sigma">{label}</Typography>}
+      {label && <Typography>{label}</Typography>}
     </Flex>
   );
 };

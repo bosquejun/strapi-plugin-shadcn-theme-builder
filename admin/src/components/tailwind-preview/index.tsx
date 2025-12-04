@@ -9,7 +9,7 @@ import Card3 from './cards/card-3';
 import { CardStats2 } from './cards/card-stats-2';
 import { CardsStats } from './cards/stats';
 
-export function TailwindPreview() {
+function TailwindPreview() {
   const { currentTheme, isDarkMode, loading } = useThemePresets();
   const targetMode = isDarkMode ? 'dark' : 'light';
 
@@ -57,3 +57,5 @@ export function TailwindPreview() {
     </TooltipProvider>
   );
 }
+
+export default TailwindPreview;

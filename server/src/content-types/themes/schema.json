@@ -1,0 +1,40 @@
+{
+  "kind": "collectionType",
+  "collectionName": "themes",
+  "info": {
+    "singularName": "theme",
+    "pluralName": "themes",
+    "displayName": "Theme",
+    "description": "Stores custom themes"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {
+    "content-type-builder": {
+      "visible": false
+    }
+  },
+  "attributes": {
+    "themeId": {
+      "type": "uid",
+      "targetField": "name",
+      "unique": true
+    },
+    "name": {
+      "type": "string",
+      "require": true
+    },
+    "source": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string"
+    },
+    "theme": {
+      "type": "json",
+      "required": true,
+      "editable": false
+    }
+  }
+}

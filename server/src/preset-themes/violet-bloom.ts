@@ -83,6 +83,7 @@ const violetBloomTheme: ThemeRegistryInput = {
   name: 'Violet Bloom',
   id: 'violet-bloom',
   source: 'tweakcn',
+  type: 'built-in',
 };
 
 export default violetBloomTheme;

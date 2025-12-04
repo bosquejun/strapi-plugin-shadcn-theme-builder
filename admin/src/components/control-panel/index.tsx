@@ -1,9 +1,34 @@
-import { Button, Divider, Flex, ScrollArea, Tabs, Typography } from '@strapi/design-system';
+import slugify from '@sindresorhus/slugify';
+import {
+  Button,
+  Dialog,
+  Divider,
+  Field,
+  Flex,
+  IconButton,
+  IconButtonGroup,
+  ScrollArea,
+  Tabs,
+  Typography,
+} from '@strapi/design-system';
+import { Pencil, Trash } from '@strapi/icons';
+import { useState } from 'react';
 import { useThemePresets } from '../../contexts/theme-presets';
 import { ColorsControlAccordion } from './colors-control-accordion';
 
 export function ControlPanel() {
-  const { currentTheme, updateColorPalette, isDarkMode } = useThemePresets();
+  const [field, setField] = useState<{ id: string; name: string }>({
+    name: '',
+    id: '',
+  });
+  const {
+    currentTheme,
+    updateColorPalette,
+    isDarkMode,
+    discardCustomTheme,
+    saveCustomTheme,
+    deleteCustomTheme,
+  } = useThemePresets();
 
   const targetMode = isDarkMode ? 'dark' : 'light';
 
@@ -11,9 +36,109 @@ export function ControlPanel() {
     <Flex direction="column" gap={2} width="100%" alignItems="flex-start">
       <Flex gap={2} alignItems="center" justifyContent="space-between" width="100%">
         <Typography>Control Panel</Typography>
-        <Button size="L" variant="secondary" disabled={currentTheme?.id !== 'custom'}>
-          Save Custom Theme
-        </Button>
+        <Flex gap={1}>
+          {currentTheme?.type === 'custom' && (
+            <IconButtonGroup>
+              <IconButton label="Edit">
+                <Pencil />
+              </IconButton>
+              <Dialog.Root>
+                <Dialog.Trigger>
+                  <IconButton label="Delete" variant="danger">
+                    <Trash />
+                  </IconButton>
+                </Dialog.Trigger>
+                <Dialog.Content>
+                  <Dialog.Header>Confirmation</Dialog.Header>
+                  <Dialog.Body>
+                    <Field.Root width="100%">
+                      <Field.Label>
+                        Are you sure you want to delete {currentTheme.name}?
+                      </Field.Label>
+                    </Field.Root>
+                  </Dialog.Body>
+                  <Dialog.Footer>
+                    <Dialog.Cancel>
+                      <Button fullWidth variant="tertiary">
+                        Cancel
+                      </Button>
+                    </Dialog.Cancel>
+                    <Dialog.Action onClick={deleteCustomTheme}>
+                      <Button fullWidth variant="danger-light">
+                        Confirm
+                      </Button>
+                    </Dialog.Action>
+                  </Dialog.Footer>
+                </Dialog.Content>
+              </Dialog.Root>
+            </IconButtonGroup>
+          )}
+
+          {currentTheme?.type === 'new' && (
+            <Button variant="danger-light" onClick={discardCustomTheme}>
+              Discard Changes
+            </Button>
+          )}
+          <Dialog.Root>
+            <Dialog.Trigger>
+              <Button variant="secondary" disabled={currentTheme?.type !== 'new'}>
+                Save Custom Theme
+              </Button>
+            </Dialog.Trigger>
+            <Dialog.Content>
+              <Dialog.Header>Save new theme</Dialog.Header>
+              <Dialog.Body>
+                <Field.Root width="100%" required>
+                  <Field.Label>Theme name</Field.Label>
+                  <Field.Input
+                    type="text"
+                    placeholder="Awesome Theme"
+                    onChange={(e: any) => {
+                      setField({
+                        id: slugify(e.target.value),
+                        name: e.target.value,
+                      });
+                    }}
+                  />
+                </Field.Root>
+                <Field.Root width="100%">
+                  <Field.Label>Slug</Field.Label>
+                  <Field.Input
+                    type="text"
+                    value={field.id}
+                    pattern="^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                    oninput="this.value = this.value.replace(/\s+/g, '-')"
+                    onChange={(e: any) => {
+                      // const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+                      const slug = e.target.value;
+                      // if (!slugRegex.test(slug)) return;
+                      setField({
+                        ...field,
+                        id: slug,
+                      });
+                    }}
+                  />
+                </Field.Root>
+              </Dialog.Body>
+              <Dialog.Footer>
+                <Dialog.Cancel>
+                  <Button fullWidth variant="tertiary">
+                    Cancel
+                  </Button>
+                </Dialog.Cancel>
+                <Dialog.Action
+                  onClick={() => {
+                    saveCustomTheme(field);
+                  }}
+                >
+                  <Button fullWidth variant="danger-light">
+                    Save
+                  </Button>
+                </Dialog.Action>
+              </Dialog.Footer>
+            </Dialog.Content>
+          </Dialog.Root>
+        </Flex>
       </Flex>
       <Divider width="100%" />
       <Flex gap={2} alignItems="center" width="100%">

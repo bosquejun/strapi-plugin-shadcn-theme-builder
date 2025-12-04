@@ -10,15 +10,24 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "content-manager": {
+      "visible": false
+    },
+    "content-type-builder": {
+      "visible": false
+    }
+  },
   "attributes": {
     "themeId": {
       "type": "string",
-      "required": true
+      "required": true,
+      "editable": false
     },
     "theme": {
       "type": "json",
-      "required": true
+      "required": true,
+      "editable": false
     }
   }
 }

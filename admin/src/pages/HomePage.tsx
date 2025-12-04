@@ -1,16 +1,18 @@
 import { Typography } from '@strapi/design-system';
-import { Eye, Faders } from '@strapi/icons';
+import { Eye, Faders, Loader } from '@strapi/icons';
 import { useIntl } from 'react-intl';
 
 import { Page, useMediaQuery } from '@strapi/admin/strapi-admin';
 import { Box, Flex, Grid, Tabs } from '@strapi/design-system';
 import { useIsDesktop } from '@strapi/strapi/admin';
+import { lazy, Suspense } from 'react';
 import ColorThemesSelection from '../components/color-themes-selection';
 import { ControlPanel } from '../components/control-panel';
-import { TailwindPreview } from '../components/tailwind-preview';
 import { ThemeCode } from '../components/theme-code';
 import ToggleTailwindMode from '../components/toggle-tailwind-mode';
 import { getTranslation } from '../utils/getTranslation';
+
+const LazyTailwindPreview = lazy(() => import('../components/tailwind-preview'));
 
 const HomePage = () => {
   const { formatMessage } = useIntl();
@@ -87,7 +89,15 @@ const HomePage = () => {
                   </Flex>
                 </Flex>
                 <Flex gap={2} alignItems="center" width="100%" height="100%">
-                  <TailwindPreview />
+                  <Suspense
+                    fallback={
+                      <Box width="100%" height="100%">
+                        <Loader />
+                      </Box>
+                    }
+                  >
+                    <LazyTailwindPreview />
+                  </Suspense>
                 </Flex>
               </Flex>
             </Grid.Item>

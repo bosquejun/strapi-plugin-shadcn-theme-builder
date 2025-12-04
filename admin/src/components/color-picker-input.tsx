@@ -1,10 +1,8 @@
 import { Box, Button, Flex, Popover } from '@strapi/design-system';
-import { extend } from 'colord';
-import namesPlugin from 'colord/plugins/names';
+
 import { formatHex } from 'culori';
 import { useMemo } from 'react';
 import { HexColorPicker } from 'react-colorful';
-extend([namesPlugin]);
 
 type ColorPickerInputProps = {
   value: string;

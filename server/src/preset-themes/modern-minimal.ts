@@ -81,6 +81,7 @@ const modernMinimalTheme: ThemeRegistryInput = {
   name: 'Modern Minimal',
   id: 'modern-minimal',
   source: 'tweakcn',
+  type: 'built-in',
 };
 
 export default modernMinimalTheme;

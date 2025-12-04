@@ -1,3 +1,4 @@
+import slugify from '@sindresorhus/slugify';
 import { Page, useFetchClient, useNotification } from '@strapi/strapi/admin';
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTheme } from 'styled-components';
@@ -13,6 +14,7 @@ export type PresetTheme = {
   name: string;
   id: string;
   source: string;
+  type: 'built-in' | 'custom' | 'new';
 };
 
 type ThemePresetsContext = {
@@ -27,6 +29,9 @@ type ThemePresetsContext = {
   updateCurrentThemeById: (id: string | null) => void;
   updateColorPalette: (colorKey: keyof ThemePreset, value: string) => void;
   setActiveThemeById: (id: string) => void;
+  discardCustomTheme: () => void;
+  saveCustomTheme: (payload: Pick<PresetTheme, 'name' | 'id'>) => Promise<void>;
+  deleteCustomTheme: () => Promise<void>;
 };
 
 export function getThemeColorPalette(theme: PresetTheme | null, isDarkMode = false): string[] {
@@ -40,19 +45,13 @@ export function getThemeColorPalette(theme: PresetTheme | null, isDarkMode = fal
   ];
 }
 
-const Context = createContext<ThemePresetsContext>({
-  themes: [],
-  currentTheme: null,
-  activeTheme: null,
-  setCurrentTheme: () => {},
-  loading: true,
-  currentColorPalette: [],
-  isDarkMode: false,
-  toggleDarkMode: () => {},
-  updateCurrentThemeById: () => {},
-  updateColorPalette: () => {},
-  setActiveThemeById: () => {},
-});
+const Context = createContext<ThemePresetsContext | null>(null);
+
+const partialCustomThemeProps: Partial<PresetTheme> = {
+  id: 'custom',
+  name: 'Custom (Unsaved)',
+  type: 'new',
+};
 
 export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }) => {
   const [themes, setThemes] = useState<PresetTheme[]>([]);
@@ -63,17 +62,24 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
   const [isDarkMode, setIsDarkMode] = useState(mode === 'dark' ? true : false);
   const { toggleNotification } = useNotification();
   const theme = useTheme();
-  const { get } = useFetchClient();
+  const { get, post, del } = useFetchClient();
 
   const loadThemes = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await get(`${BASE_PLUGIN_URL}/presets`);
+      const response = await get(`${BASE_PLUGIN_URL}/theme/presets`);
 
       const data = (response?.data || response) as PresetTheme[];
+
+      const unsavedTheme = window.localStorage.getItem('unsaved-theme');
+
+      if (unsavedTheme) {
+        data.unshift(JSON.parse(unsavedTheme));
+      }
+
       setThemes(data);
 
-      const activeResponse = await get(`${BASE_PLUGIN_URL}/active-theme`);
+      const activeResponse = await get(`${BASE_PLUGIN_URL}/theme/active`);
 
       const activeThemeResponse = (activeResponse?.data || activeResponse) as {
         themeId: string;
@@ -99,6 +105,11 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
     loadThemes();
   }, [get]);
 
+  useEffect(() => {
+    if (currentTheme?.type !== 'new') return;
+    window.localStorage.setItem('unsaved-theme', JSON.stringify(currentTheme));
+  }, [currentTheme]);
+
   const currentColorPalette = useMemo(
     () => getThemeColorPalette(currentTheme, isDarkMode),
     [currentTheme, isDarkMode]
@@ -113,8 +124,8 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
     if (theme) {
       setCurrentTheme(theme);
     }
-    const removedCustomThemes = themes.filter((theme) => theme.id !== 'custom');
-    setThemes([...removedCustomThemes]);
+    // const removedCustomThemes = themes.filter((theme) => theme.id !== 'custom');
+    setThemes([...themes]);
   };
 
   const updateColorPalette = (colorKey: keyof ThemePreset, value: string) => {
@@ -128,21 +139,22 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
         ...(isDarkMode ? { [colorKey]: value } : {}),
       },
     };
-    if (!themes.find((theme) => theme.id === 'custom') && currentTheme?.id !== 'custom') {
+
+    debugger;
+    if (!themes.find((theme) => theme.type === 'new')) {
       const newTheme = {
-        id: 'custom',
-        name: 'Custom (Unsaved)',
+        ...partialCustomThemeProps,
         ...updateThemeColors,
       } as PresetTheme;
       setThemes([newTheme, ...themes]);
       setCurrentTheme(newTheme);
-    } else if (currentTheme?.id === 'custom') {
+    } else {
       const newTheme = {
         ...currentTheme,
         ...updateThemeColors,
       } as PresetTheme;
 
-      const index = themes.findIndex((theme) => theme.id === 'custom');
+      const index = themes.findIndex((theme) => theme.id === newTheme.id);
       if (index !== -1) {
         themes[index] = newTheme;
         setThemes([...themes]);
@@ -170,7 +182,7 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
         return;
       }
 
-      const response = await get(`${BASE_PLUGIN_URL}/set-theme/${id}`);
+      const response = await post(`${BASE_PLUGIN_URL}/theme/activate`, { themeId: id });
 
       const data = (response?.data || response) as {
         theme: PresetTheme;
@@ -185,6 +197,39 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
     [activeTheme]
   );
 
+  const discardCustomTheme = () => {
+    window.localStorage.removeItem('unsaved-theme');
+    const removedCustomThemes = themes.filter((theme) => theme.id !== 'custom');
+    setThemes([...removedCustomThemes]);
+    setCurrentTheme(activeTheme);
+  };
+
+  const saveCustomTheme = async (payload: Pick<PresetTheme, 'name' | 'id'>) => {
+    if (!currentTheme) return;
+    const { type, source, id, ...requestPayload } = currentTheme;
+    await post(`${BASE_PLUGIN_URL}/theme/`, {
+      ...requestPayload,
+      name: payload.name,
+      id: slugify(payload.id),
+    });
+    window.localStorage.removeItem('unsaved-theme');
+    await loadThemes();
+    toggleNotification({
+      type: 'success',
+      message: 'Successfully saved new theme',
+    });
+  };
+
+  const deleteCustomTheme = async () => {
+    if (!currentTheme) return;
+    await del(`${BASE_PLUGIN_URL}/theme/${currentTheme?.id}`);
+    toggleNotification({
+      type: 'success',
+      message: 'Successfully deleted theme',
+    });
+    await loadThemes();
+  };
+
   const contextValue: ThemePresetsContext = {
     themes,
     currentTheme,
@@ -197,6 +242,9 @@ export const ThemePresetsProvider = ({ children }: { children: React.ReactNode }
     updateColorPalette,
     activeTheme,
     setActiveThemeById,
+    discardCustomTheme,
+    saveCustomTheme,
+    deleteCustomTheme,
   };
 
   return (

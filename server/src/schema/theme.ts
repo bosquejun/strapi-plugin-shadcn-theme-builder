@@ -105,6 +105,22 @@ export const themeRegistryInput = z.object({
   name: z.string().min(1, 'Theme name is required'),
   id: z.string().min(1, 'Theme id is required'),
   source: z.string().min(1, 'Theme source is required'),
+  type: z.enum(['built-in', 'custom'], 'Type must be either built-in or custom'),
+});
+
+export const createThemeRegistryInput = themeRegistryInput
+  .omit({
+    type: true,
+    source: true,
+    id: true,
+  })
+  .extend({
+    id: z.string().min(1, 'Theme id is required').optional(),
+  });
+
+export const themeRegistrySchema = z.object({
+  themeId: z.string().min(1, 'Theme id is required'),
+  theme: themeRegistryInput,
 });
 
 // Type inference from schemas
@@ -112,3 +128,5 @@ export type ThemeColorsInput = z.infer<typeof themeColorsSchema>;
 export type ThemeFontsInput = z.infer<typeof themeFontsSchema>;
 export type ThemePresetInput = z.infer<typeof themePresetSchema>;
 export type ThemeRegistryInput = z.infer<typeof themeRegistryInput>;
+export type ThemeRegistrySchema = z.infer<typeof themeRegistrySchema>;
+export type CreateThemeRegistryInput = z.infer<typeof createThemeRegistryInput>;

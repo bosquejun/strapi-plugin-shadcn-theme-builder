@@ -8,7 +8,6 @@ export const ThemeCode = () => {
   const { currentTheme } = useThemePresets();
   if (!currentTheme) return null;
 
-  console.log(currentTheme);
   return (
     <Modal.Root>
       <Modal.Trigger>

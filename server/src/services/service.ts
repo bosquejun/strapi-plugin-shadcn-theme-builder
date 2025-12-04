@@ -1,13 +1,16 @@
 import type { Core } from '@strapi/strapi';
+import { PLUGIN_ID, PLUGIN_SYSTEM_NAME } from '../constants';
 import presetThemes from '../preset-themes';
-import { ThemeRegistryInput, themeRegistryInput } from '../schema/theme';
+import { CreateThemeRegistryInput, ThemeRegistryInput, themeRegistryInput } from '../schema/theme';
+
+const ACTIVE_THEME = 'active-theme';
 
 const service = ({ strapi }: { strapi: Core.Strapi }) => ({
   getWelcomeMessage() {
     return 'Welcome to Strapi 🚀';
   },
 
-  getPresetThemes() {
+  async getPresetThemes() {
     const presets = Object.values(presetThemes) as ThemeRegistryInput[];
 
     const themes: ThemeRegistryInput[] = presets.filter((registry) => {
@@ -20,23 +23,35 @@ const service = ({ strapi }: { strapi: Core.Strapi }) => ({
       }
     });
 
+    const customThemes = await this.getCustomThemes();
+
+    if (customThemes.length) {
+      return [
+        ...themes,
+        ...customThemes.map((c) => ({
+          id: c.themeId,
+          name: c.name,
+          ...c.theme,
+          source: c.source,
+          type: c.type || 'custom',
+        })),
+      ];
+    }
+
     return themes;
   },
 
   async getActiveTheme(useDefault = false) {
     try {
-      // let result = await strapi.documents(`plugin::shadcn-theme-builder.active-theme`).findOne({
-      //   documentId: 'active-theme',
-      // });
-      let result = await strapi.db.query('plugin::shadcn-theme-builder.active-theme').findOne({
+      let result = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.${ACTIVE_THEME}`).findOne({
         where: {
-          documentId: 'active-theme',
+          documentId: ACTIVE_THEME,
         },
       });
 
       if (!result && useDefault) {
         result = {
-          documentId: 'active-theme',
+          documentId: ACTIVE_THEME,
           id: 0,
           themeId: presetThemes.defaultTheme.id,
           theme: presetThemes.defaultTheme,
@@ -52,7 +67,8 @@ const service = ({ strapi }: { strapi: Core.Strapi }) => ({
 
   async setActiveThemeById(id: string) {
     try {
-      const presetTheme = Object.values(presetThemes).find((registry) => registry.id === id);
+      const themes = await this.getPresetThemes();
+      const presetTheme = themes.find((registry) => registry.id === id);
 
       if (!presetTheme) throw new Error('id not found on presets');
 
@@ -61,17 +77,17 @@ const service = ({ strapi }: { strapi: Core.Strapi }) => ({
       let result;
 
       if (!activeTheme) {
-        result = await strapi.db.query(`plugin::shadcn-theme-builder.active-theme`).create({
+        result = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.${ACTIVE_THEME}`).create({
           data: {
-            documentId: 'active-theme',
+            documentId: ACTIVE_THEME,
             themeId: id,
             theme: presetTheme,
           },
         });
       } else {
-        result = await strapi.db.query(`plugin::shadcn-theme-builder.active-theme`).update({
+        result = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.${ACTIVE_THEME}`).update({
           where: {
-            documentId: 'active-theme',
+            documentId: ACTIVE_THEME,
           },
           data: {
             themeId: presetTheme.id,
@@ -85,6 +101,70 @@ const service = ({ strapi }: { strapi: Core.Strapi }) => ({
       strapi.log.error(error);
       throw error;
     }
+  },
+
+  async createTheme(data: CreateThemeRegistryInput) {
+    try {
+      const [_, count] = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.theme`).findWithCount({
+        where: {
+          themeId: {
+            $startsWith: data.id,
+          },
+        },
+      });
+
+      if (count > 0 && data.id) {
+        data.id = `${data.id}-${count}`;
+      }
+
+      const completeData = {
+        type: 'custom',
+        source: PLUGIN_ID,
+        themeId: data.id,
+        theme: {
+          dark: data.dark,
+          light: data.light,
+        },
+        name: data.name,
+      };
+      const result = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.theme`).create({
+        data: completeData,
+      });
+
+      await this.setActiveThemeById(result.themeId);
+
+      return {
+        id: result.themeId,
+        name: result.name,
+        source: result.source,
+        type: result.type,
+        ...result.theme,
+      };
+    } catch (error) {
+      strapi.log.error(error);
+      throw error;
+    }
+  },
+
+  async getCustomThemes() {
+    try {
+      const result = await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.theme`).findMany();
+
+      return result;
+    } catch (error) {
+      strapi.log.error(error);
+      throw error;
+    }
+  },
+
+  async deleteCustomTheme(id: string) {
+    await strapi.db.query(`${PLUGIN_SYSTEM_NAME}.theme`).delete({
+      where: {
+        themeId: id,
+      },
+    });
+
+    await this.setActiveThemeById('default');
   },
 });
 

@@ -92,6 +92,7 @@ const defaultTheme: ThemeRegistryInput = {
   name: 'Default',
   id: 'default',
   source: 'shadcn-theme-builder',
+  type: 'built-in',
 };
 
 export default defaultTheme;
